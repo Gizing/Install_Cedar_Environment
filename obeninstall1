@@ -1,0 +1,155 @@
+#! /bin/sh
+echo "Liunx Version"
+echo "------------------------------------------------"
+cat /proc/version
+sleep 5
+echo "Centos Version"
+echo "------------------------------------------------"
+mkdir -p /home/admin/obeninstalllog/
+lsb_release -a 
+
+
+echo "if you find the version is err,please cancle it!!"
+
+
+sleep 10
+
+
+#给admin用户加入sudoers文件
+chmod u+w /etc/sudoers
+sed '/root\tALL=(ALL)\tALL/a\admin\tALL=(ALL)\tALL' /etc/sudoers -i
+chmod u-w /etc/sudoers
+
+sleep 3
+
+#配置本地源
+echo "CentOS local yumsource install!"
+echo "------------------------------------------------"
+
+echo "|--解压yumsource.tar.gz到本地/home/admin/"
+echo "|--------------------------------------------------"
+#scp -r admin@10.11.1.196:~/yumsource /home/admin/ || echo "本地源拷贝失败，请重新运行脚本。"
+tar zxvf yumsource.tar.gz -C /home/admin || echo "本地源解压失败，请重新运行脚本。"
+if [ $? -eq 0 ];then
+    echo  "yumsource解压成功！"
+    echo "yumsource解压成功！" >>/home/admin/installlog/yumsource.log
+else
+    echo "本地源删除失败！"
+    echo "本地源删除失败！" >>/home/admin/installlog/yumsource.log
+fi
+echo "|--进行本地源配置项配置"
+echo "   |--进入/etc/yum.repos.d目录"
+echo "   |--备份yum.repos.d中的文件"
+cd /etc/yum.repos.d/ && mkdir obenback && mv *.repo ./obenback
+if [ $? -eq 0 ];then
+    echo "备份成功！" >>/home/admin/installlog/yumsource.log
+    echo "备份成功！"
+else
+    echo "本地源备份失败！" >>/home/admin/installlog/yumsource.log
+    echo "本地源备份失败！" 
+    echo "请重新运行脚本！"
+    sleep 50
+fi
+sleep 5
+echo "|--配置本地源文件"
+
+echo "
+[local_server]
+name=This is a local repo
+baseurl=file:///home/admin/yumsource/cdrom
+enabled=1
+gpgcheck=0
+" >>/etc/yum.repos.d/local.repo
+
+if [ $? -eq 0 ];then
+    echo "配置成功！" >>/home/admin/installlog/yumsource.log
+    echo "配置成功！"
+else
+    echo "本地源配置失败！" >>/home/admin/installlog/yumsource.log
+    echo "本地源配置失败！" 
+    echo "请重新运行脚本！"
+    sleep 50
+fi
+mkdir /etc/obenback && cp /etc/resolv.conf /etc/obenback
+
+sleep 5
+yum clean all
+sleep 5
+yum makecache
+
+
+echo "本地yum配置完成"
+
+echo "安装gcc和gcc-c++和其他工具"
+echo "|--安装gcc"
+yum install -y gcc-4.4.*
+echo "|--安装g++"
+sleep 3
+yum install -y gcc-c++*
+echo "|--安装libtool"
+sleep 3
+yum install -y libtool*
+echo "|--安装autoconf"
+sleep 3
+yum install -y autoconf*
+echo "|--安装automake"
+sleep 3
+yum install -y automake*
+echo "|--安装numactl-devel"
+sleep 3
+yum install -y  numactl-devel*
+echo "|--安装libcurl-devel"
+sleep 3
+yum install -y  libcurl-devel*
+echo "|--安装openssl-devel"
+sleep 3
+yum install -y openssl-devel*
+echo "|--安装readline-devel"
+sleep
+yum install -y readline-devel*
+echo "|--安装ncurses-devel"
+sleep 3
+yum install -y ncurses-devel*
+echo "|--安装mysql-devel"
+sleep 3
+yum install -y mysql-devel*
+sleep 3
+echo "gcc和gcc-c++和其他工具安装完成！"
+
+
+
+
+
+
+
+
+
+echo "配置环境变量"
+
+echo '
+export ONEV_ROOT=/home/admin/libonev
+export ONEV_LIB_PATH=$ONEV_ROOT/lib
+export TBLIB_ROOT=~/tb-common-utils 
+export LD_LIBRARY_PATH=/home/admin/oceanbase/lib:/usr/local/lib/libsnappy.so:/usr/:/usr/lib/:/usr/local/lib:/lib:$TBLIB_ROOT/lib:/usr/local/lib64
+export EASY_ROOT=/usr 
+export EASY_LIB_PATH=$EASY_ROOT/lib64 
+export DRC_ROOT=/home/ds
+' >>/home/admin/.bashrc
+
+
+echo "将/etc/yum.repos.d中还原"
+cd /etc/yum.repos.d/obenback && mv *.repo ../ -f
+cd /etc/yum.repos.d && rm -rf obenback
+yum clean all
+mv /etc/obenback/resolv.conf /etc/resolv.conf -f
+cd /etc && rm -rf obenback
+yum makecache
+
+
+echo "切换成admin"
+su admin
+source /home/admin/.bashrc
+sudo mkdir /home/ds
+
+echo "请运行脚本obeninstall2"
+

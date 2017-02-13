@@ -1,0 +1,80 @@
+#! /bin/sh
+
+echo "解压Lib.tar.gz到本地/home/admin"
+tar zxvf Lib.tar.gz -C /home/admin
+echo "解压libonev.tar.gz到本地/home/admin"
+tar zxvf libonev.tar.gz -C /home/admin
+
+
+echo "安装liblzo2"
+echo "进入/home/admin/Lib/lzo-2.06"
+cd /home/admin/Lib/lzo-2.06
+sleep 2
+./configure --enable-shared --prefix=/usr/ && make && sudo make install
+echo "退出/home/admin/Lib/lzo-2.06"
+sleep 3
+
+echo "安装Snappy"
+echo "进入/home/admin/Lib/snappy-1.0.3"
+cd /home/admin/Lib/snappy-1.0.3
+sleep 2
+./configure && make -j 10 && sudo make install
+echo "退出/home/admin/Lib/snappy-1.0.3"
+
+echo "安装libaio"
+echo "进入/home/admin/Lib/libaio-0.3.107"
+
+cd /home/admin/Lib/libaio-0.3.107
+sleep 2
+make && sudo make install
+echo "退出/home/admin/Lib/libaio-0.3.107"
+
+
+
+echo "安装gtest和gmock"
+echo "进入/home/admin/Lib/gtest-1.6.0"
+cd /home/admin/Lib/gtest-1.6.0
+sleep 2
+./configure && make 
+sudo cp -r include/gtest /usr/local/include
+sleep 1
+sudo cp -r lib/.libs/* /usr/local/lib/
+sleep 1
+cd /home/admin/Lib/gmock-1.6.0
+sleep 2
+./configure && make 
+sleep 2
+sudo cp -r include/gmock /usr/local/include
+sleep 1
+sudo cp -r lib/.libs/* /usr/local/lib/
+sleep 1
+echo "退出/home/admin/Lib/gtest-1.6.0"
+
+
+
+echo "安装tbsys和tbnet"
+echo "进入/home/admin/Lib/tb-common-utils "
+cd /home/admin/Lib/tb-common-utils
+sleep 2
+sh build.sh
+echo "退出/home/admin/Lib/tb-common-utils "
+
+
+
+echo "安装libeasy"
+echo "进入/home/admin/Lib"
+cd /home/admin/Lib
+sleep 2
+sudo rpm -ivh tb-lua-dev-5.1.4-100.el6.x86_64.rpm
+sleep 2
+sudo rpm -ivh t-db-congo-drcmessage-0.1.1-26.el6.x86_64.rpm
+sleep 2
+sudo rpm -ivh t_libeasy-1.0.22-304.el6.x86_64.rpm
+sleep 2
+sudo rpm -ivh t_libeasy-devel-1.0.22-304.el6.x86_64.rpm
+sleep 2
+
+echo "退出/home/admin/Lib "
+
+
+echo "ob环境配置成功！"
