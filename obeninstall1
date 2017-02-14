@@ -5,7 +5,6 @@ cat /proc/version
 sleep 5
 echo "Centos Version"
 echo "------------------------------------------------"
-mkdir -p /home/admin/obeninstalllog/
 lsb_release -a 
 
 
@@ -13,6 +12,9 @@ echo "if you find the version is err,please cancle it!!"
 
 
 sleep 10
+
+mkdir -p /home/admin/obeninstalllog/
+touch /home/admin/obeninstalllog/yumsource.log
 
 
 #给admin用户加入sudoers文件
@@ -34,8 +36,8 @@ if [ $? -eq 0 ];then
     echo  "yumsource解压成功！"
     echo "yumsource解压成功！" >>/home/admin/installlog/yumsource.log
 else
-    echo "本地源删除失败！"
-    echo "本地源删除失败！" >>/home/admin/installlog/yumsource.log
+    echo "yumsource解压失败！"
+    echo "yumsource解压失败！" >>/home/admin/installlog/yumsource.log
 fi
 echo "|--进行本地源配置项配置"
 echo "   |--进入/etc/yum.repos.d目录"
@@ -121,11 +123,26 @@ echo "gcc和gcc-c++和其他工具安装完成！"
 
 
 
+echo "将/etc/yum.repos.d中还原"
+cd /etc/yum.repos.d/obenback && cp *.repo ../
+cd /etc/yum.repos.d && rm -rf obenback
+yum clean all
+cp /etc/obenback/resolv.conf /etc/
+cd /etc && rm -rf obenback
+yum makecache
 
 
+
+
+
+
+
+
+
+echo "切换成admin"
+su admin
 
 echo "配置环境变量"
-
 echo '
 export ONEV_ROOT=/home/admin/libonev
 export ONEV_LIB_PATH=$ONEV_ROOT/lib
@@ -134,20 +151,9 @@ export LD_LIBRARY_PATH=/home/admin/oceanbase/lib:/usr/local/lib/libsnappy.so:/us
 export EASY_ROOT=/usr 
 export EASY_LIB_PATH=$EASY_ROOT/lib64 
 export DRC_ROOT=/home/ds
-' >>/home/admin/.bashrc
+' >> /home/admin/.bashrc
 
 
-echo "将/etc/yum.repos.d中还原"
-cd /etc/yum.repos.d/obenback && mv *.repo ../ -f
-cd /etc/yum.repos.d && rm -rf obenback
-yum clean all
-mv /etc/obenback/resolv.conf /etc/resolv.conf -f
-cd /etc && rm -rf obenback
-yum makecache
-
-
-echo "切换成admin"
-su admin
 source /home/admin/.bashrc
 sudo mkdir /home/ds
 
