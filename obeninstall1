@@ -19,7 +19,7 @@ touch /home/admin/obeninstalllog/yumsource.log
 
 #给admin用户加入sudoers文件
 chmod u+w /etc/sudoers
-sed '/root\tALL=(ALL)\tALL/a\admin\tALL=(ALL)\tALL' /etc/sudoers -i
+sed '/## Allow root to run any commands anywhere/a\admin\tALL=(ALL)\tALL' /etc/sudoers -i
 chmod u-w /etc/sudoers
 
 sleep 3
