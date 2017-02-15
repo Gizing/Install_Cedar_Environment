@@ -16,6 +16,7 @@ sleep 10
 mkdir -p /home/admin/obeninstalllog/
 touch /home/admin/obeninstalllog/yumsource.log
 
+sleep 2
 
 #给admin用户加入sudoers文件
 chmod u+w /etc/sudoers
@@ -123,6 +124,7 @@ echo "gcc和gcc-c++和其他工具安装完成！"
 
 
 
+
 echo "将/etc/yum.repos.d中还原"
 cd /etc/yum.repos.d/obenback && cp *.repo ../
 cd /etc/yum.repos.d && rm -rf obenback
@@ -130,13 +132,6 @@ yum clean all
 cp /etc/obenback/resolv.conf /etc/
 cd /etc && rm -rf obenback
 yum makecache
-
-
-
-
-
-
-
 
 
 echo "切换成admin"
@@ -156,6 +151,7 @@ export DRC_ROOT=/home/ds
 
 source /home/admin/.bashrc
 sudo mkdir /home/ds
+
 
 echo "请运行脚本obeninstall2"
 

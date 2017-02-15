@@ -54,7 +54,7 @@ echo "退出/home/admin/Lib/gtest-1.6.0"
 
 echo "安装tbsys和tbnet"
 echo "进入/home/admin/Lib/tb-common-utils "
-cd /home/admin/Lib/tb-common-utils
+cd /home/admin/Lib/tb-common-utils 
 sleep 2
 sh build.sh
 echo "退出/home/admin/Lib/tb-common-utils "
