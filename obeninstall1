@@ -29,10 +29,11 @@ sleep 3
 echo "CentOS local yumsource install!"
 echo "------------------------------------------------"
 
-echo "|--解压yumsource.tar.gz到本地/home/admin/"
+echo "|--解压yumsource_part1.tar.gz和yumsource_part2.tar.gz到本地/home/admin/"
 echo "|--------------------------------------------------"
-#scp -r admin@10.11.1.196:~/yumsource /home/admin/ || echo "本地源拷贝失败，请重新运行脚本。"
-tar zxvf yumsource.tar.gz -C /home/admin || echo "本地源解压失败，请重新运行脚本。"
+
+tar zxvf yumsource_part1.tar.gz -C /home/admin && tar zxvf yumsource_part2.tar.gz -C /home/admin/yumsource/cdrom && mv /home/admin/yumsource/cdrom/Packages_part2/* /home/admin/yumsource/cdrom/Packages && rm -rf /home/admin/yumsource/cdrom/Packages_part2
+
 if [ $? -eq 0 ];then
     echo  "yumsource解压成功！"
     echo "yumsource解压成功！" >>/home/admin/installlog/yumsource.log
