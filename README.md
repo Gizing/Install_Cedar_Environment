@@ -15,4 +15,4 @@
 2. 断开ssh连接后重新连接
 3. 使用admin账户执行obeninstall2
 
-注意：执行过程中可能需要输入相应账户密码。断开重连是为了使obeninstall1中生成的.bashrc文件能够生效。
+注意：执行过程中可能需要输入相应账户密码。断开重连是为了确保obeninstall1向.bashrc添加的内容生效。
